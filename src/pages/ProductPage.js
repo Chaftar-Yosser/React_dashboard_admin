@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import {
   Card,
@@ -143,6 +144,11 @@ export default function
     setFilterName(event.target.value);
   };
 
+  const navigate = useNavigate();
+  const handleClickOpenFrom = () => {
+    navigate('/product/create', { replace: true });
+  };
+
   const [products, setproduct] = useState([]);
   useEffect(() => {
     async function getProduct() {
@@ -176,7 +182,7 @@ export default function
           <Typography variant="h4" gutterBottom>
             Products
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill"  onClick={handleClickOpenFrom}/>}>
             New Product
           </Button>
         </Stack>
