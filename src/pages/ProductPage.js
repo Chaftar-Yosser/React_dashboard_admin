@@ -168,6 +168,9 @@ export default function () {
   }, []);
 
   
+  const handleClickOpenEitForm = (id) => {
+    navigate(`/product/showDetail/${id}`, { replace: true });
+  };
 
   const handleDelete = (id) => {
     fetch(`https://127.0.0.1:8000/product/delete/${id}`, {
@@ -239,7 +242,7 @@ export default function () {
 
                         <TableCell align="right">
                           <MenuItem>
-                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }}  onClick={() => handleClickOpenEitForm(id)}/>
                             Edit
                           </MenuItem>
 

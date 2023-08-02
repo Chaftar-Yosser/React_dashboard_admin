@@ -13,6 +13,7 @@ import CategoryPage from './pages/CategoryPage';
 import FormPages from './pages/FormPages';
 import FormEdit from './pages/FormEdit';
 import FormCreateProductPage from './pages/FormCreateProductPage';
+import FormEditProduct from './pages/FormEditProduct';
 
 // ----------------------------------------------------------------------
 
@@ -53,7 +54,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'create', element: <FormCreateProductPage/> },
-        // { path: 'showDetail/:id', element: <FormEdit /> },
+        { path: 'showDetail/:id', element: <FormEditProduct /> },
         // { path: 'edit/:id', element: <FormEdit /> },
       ],
     },
