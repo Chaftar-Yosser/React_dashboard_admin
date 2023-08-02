@@ -173,9 +173,6 @@ export default function () {
       // Supprimez la catégorie de l'état actuel
       const categoriess = categories.filter((category) => category.id !== id);
       setCategories(categoriess);
-
-      // Fermez le menu déroulant
-      // handleCloseMenu();
     });
   };
 

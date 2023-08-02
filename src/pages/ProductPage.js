@@ -76,8 +76,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function 
-() {
+export default function () {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -150,14 +149,17 @@ export default function
   };
 
   const [products, setproduct] = useState([]);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredproduct.length) : 0;
+
+  const filteredproduct = applySortFilter(products, getComparator(order, orderBy), filterName);
+
+  const isNotFound = !filteredproduct.length && !!filterName;
   useEffect(() => {
     async function getProduct() {
       try {
         const response = await fetch(`${API_BASE_URL}/product`);
-        
         const data = await response.json();
         setproduct(data);
-        console.log(data);
       } catch (err) {
         console.error(err);
       }
@@ -165,11 +167,19 @@ export default function
     getProduct();
   }, []);
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredproduct.length) : 0;
+  
 
-  const filteredproduct = applySortFilter(products, getComparator(order, orderBy), filterName);
+  const handleDelete = (id) => {
+    fetch(`https://127.0.0.1:8000/product/delete/${id}`, {
+      method: 'DELETE',
+    }).then(() => {
+      // Supprimez la catégorie de l'état actuel
+      const newproducts = products.filter((product) => product.id !== id);
+      setproduct(newproducts);
+    });
+  };
 
-  const isNotFound = !filteredproduct.length && !!filterName;
+
 
   return (
     <>
@@ -182,7 +192,7 @@ export default function
           <Typography variant="h4" gutterBottom>
             Products
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill"  onClick={handleClickOpenFrom}/>}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" onClick={handleClickOpenFrom} />}>
             New Product
           </Button>
         </Stack>
@@ -228,9 +238,15 @@ export default function
                         <TableCell align="left">{product.nbr_stock}</TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
+                          <MenuItem>
+                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                            Edit
+                          </MenuItem>
+
+                          <MenuItem sx={{ color: 'error.main' }}>
+                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} onClick={() => handleDelete(id)} />
+                            Delete
+                          </MenuItem>
                         </TableCell>
                       </TableRow>
                     );
@@ -280,35 +296,6 @@ export default function
           />
         </Card>
       </Container>
-
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
     </>
   );
 }
