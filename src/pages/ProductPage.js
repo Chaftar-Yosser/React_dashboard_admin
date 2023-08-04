@@ -18,10 +18,16 @@ import {
   TableCell,
   Container,
   Typography,
-  IconButton,
+  Modal,
   TableContainer,
   TablePagination,
 } from '@mui/material';
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -77,7 +83,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function () {
-  const [open, setOpen] = useState(null);
+  // const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
 
@@ -167,7 +173,6 @@ export default function () {
     getProduct();
   }, []);
 
-  
   const handleClickOpenEitForm = (id) => {
     navigate(`/product/showDetail/${id}`, { replace: true });
   };
@@ -176,13 +181,29 @@ export default function () {
     fetch(`https://127.0.0.1:8000/product/delete/${id}`, {
       method: 'DELETE',
     }).then(() => {
+      handleClose()
       // Supprimez la catégorie de l'état actuel
       const newproducts = products.filter((product) => product.id !== id);
       setproduct(newproducts);
     });
   };
 
+  const [open, setOpen] = React.useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleConfirmDelete = (id) => {
+    handleDelete(id);
+    // setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -242,16 +263,37 @@ export default function () {
 
                         <TableCell align="right">
                           <MenuItem>
-                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }}  onClick={() => handleClickOpenEitForm(id)}/>
-                            Edit
-                          </MenuItem>
-
-                          <MenuItem sx={{ color: 'error.main' }}>
-                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} onClick={() => handleDelete(id)} />
-                            Delete
+                            <Button variant="outlined" onClick={() => handleClickOpenEitForm(id)}  >
+                              <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                              Edit
+                            </Button>
+                            <Button variant="outlined" onClick={handleClickOpen} color="error" >
+                              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                              Delete
+                            </Button>
+                            <Dialog
+                              open={open}
+                              onClose={handleClose}
+                              aria-labelledby="alert-dialog-title"
+                              aria-describedby="alert-dialog-description"
+                            >
+                              <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+                              <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                  Are you sure you want to delete this?
+                                </DialogContentText>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={() => handleDelete(id)}>Confirm</Button>
+                                <Button onClick={handleClose} autoFocus>
+                                  Annuler
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </MenuItem>
                         </TableCell>
                       </TableRow>
+                      
                     );
                   })}
                   {emptyRows > 0 && (
