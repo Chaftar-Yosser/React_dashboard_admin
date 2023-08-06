@@ -22,6 +22,12 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -73,7 +79,6 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function () {
-  const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
 
@@ -156,7 +161,13 @@ export default function () {
   useEffect(() => {
     async function getCategories() {
       try {
-        const response = await fetch(`${API_BASE_URL}/category`);
+        const response = await fetch(`${API_BASE_URL}/category`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
+          },
+        })
         const data = await response.json();
         setCategories(data);
       } catch (err) {
@@ -169,11 +180,26 @@ export default function () {
   const handleDelete = (id) => {
     fetch(`https://127.0.0.1:8000/category/delete/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
+      },
     }).then(() => {
+      handleClose()
       // Supprimez la catégorie de l'état actuel
       const categoriess = categories.filter((category) => category.id !== id);
       setCategories(categoriess);
     });
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -228,17 +254,42 @@ export default function () {
 
                         <TableCell align="left">{category.title}</TableCell>
 
+
                         <TableCell align="right">
                           <MenuItem>
-                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }}  onClick={() => handleClickOpenEitForm(id)} />
-                            Edit
-                          </MenuItem>
-                          <MenuItem sx={{ color: 'error.main' }}>
-                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} onClick={() => handleDelete(id)} />
-                            {/* <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} onClick={handleDelete} /> */}
-                            Delete
+                            <Button variant="outlined" onClick={() => handleClickOpenEitForm(id)}  >
+                              <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                              Edit
+                            </Button>
+                            <Button variant="outlined" onClick={handleClickOpen} color="error" >
+                              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                              Delete
+                            </Button>
+                            <Dialog
+                              open={open}
+                              onClose={handleClose}
+                              aria-labelledby="alert-dialog-title"
+                              aria-describedby="alert-dialog-description"
+                            >
+                              <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+                              <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                  Are you sure you want to delete this?
+                                </DialogContentText>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={() => handleDelete(id)}>Confirm</Button>
+                                <Button onClick={handleClose} autoFocus>
+                                  Annuler
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </MenuItem>
                         </TableCell>
+
+                     
+
+                        
                       </TableRow>
                     );
                   })}

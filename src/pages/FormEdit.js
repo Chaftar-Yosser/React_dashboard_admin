@@ -14,8 +14,13 @@ export default function FormEdit() {
   useEffect(() => {
     async function getCategory() {
       try {
-        const response = await fetch(`${API_BASE_URL}/category/showDetail/${id}`);
-        console.log("hhhhhhhhhhhhhhhhhhhhhh")
+        const response = await fetch(`${API_BASE_URL}/category/showDetail/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
+          },
+        });
         const data = await response.json();
         setTitle(data.title);
         console.log(data)
@@ -37,6 +42,7 @@ export default function FormEdit() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
         },
         body: JSON.stringify({ title }),
       });

@@ -35,6 +35,7 @@ export default function FormCreateProductPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
         },
         body: JSON.stringify({ title , description , price, nbrStock , image}),
       });

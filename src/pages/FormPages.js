@@ -24,9 +24,11 @@ export default function FormPages() {
 
     try {
       const response = await fetch('https://127.0.0.1:8000/category/create', {
+       
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
         },
         body: JSON.stringify({ title }),
       });
@@ -58,21 +60,7 @@ export default function FormPages() {
 
         <Card>
           <Stack padding={5} spacing={3}>
-          <TextField name="title" label="category title" value={title} onChange={(e) => setTitle(e.target.value)} />
-
-            <TextField
-              name="password"
-              label="Password"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end">
-                      <Iconify icon={'eva:eye-off-fill'} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <TextField name="title" label="category title" value={title} onChange={(e) => setTitle(e.target.value)} />
           </Stack>
 
           <Stack mb={4} ml={5} direction="row" alignItems="center" justifyContent="space-between">

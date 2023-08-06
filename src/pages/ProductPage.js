@@ -163,7 +163,13 @@ export default function () {
   useEffect(() => {
     async function getProduct() {
       try {
-        const response = await fetch(`${API_BASE_URL}/product`);
+        const response = await fetch(`${API_BASE_URL}/product`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
+          },
+        })
         const data = await response.json();
         setproduct(data);
       } catch (err) {
@@ -178,8 +184,13 @@ export default function () {
   };
 
   const handleDelete = (id) => {
+    console.log(localStorage.getItem('token') )
     fetch(`https://127.0.0.1:8000/product/delete/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
+      },
     }).then(() => {
       handleClose()
       // Supprimez la catégorie de l'état actuel
@@ -196,13 +207,6 @@ export default function () {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleConfirmDelete = (id) => {
-    handleDelete(id);
-    // setIsModalOpen(false);
   };
 
   return (
@@ -293,7 +297,7 @@ export default function () {
                           </MenuItem>
                         </TableCell>
                       </TableRow>
-                      
+
                     );
                   })}
                   {emptyRows > 0 && (

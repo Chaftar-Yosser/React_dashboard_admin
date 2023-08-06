@@ -16,7 +16,13 @@ export default function FormEditProduct() {
   useEffect(() => {
     async function getCategory() {
       try {
-        const response = await fetch(`${API_BASE_URL}/product/showDetail/${id}`);
+        const response = await fetch(`${API_BASE_URL}/product/showDetail/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
+          },
+        });
         const data = await response.json();
         setTitle(data.title);
         setDescription(data.description);
@@ -48,25 +54,6 @@ export default function FormEditProduct() {
   };
 
   const [showAlert, setShowAlert] = useState(false);
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/product/edit/${id}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ title, description, price, nbrStock, image }),
-  //     });
-  //     const data = await response.json();
-  //     navigate('/dashboard/product');
-  //     console.log(showAlert);
-  //     setShowAlert(true);
-  //     console.log(showAlert);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -75,6 +62,7 @@ export default function FormEditProduct() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajouter le jeton à l'en-tête Authorization
         },
         body: JSON.stringify({ title, description, price, nbrStock, image }),
       });
