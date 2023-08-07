@@ -271,14 +271,14 @@ export default function () {
                               aria-labelledby="alert-dialog-title"
                               aria-describedby="alert-dialog-description"
                             >
-                              <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+                              <DialogTitle id="alert-dialog-title">{"Delete"}</DialogTitle>
                               <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
                                   Are you sure you want to delete this?
                                 </DialogContentText>
                               </DialogContent>
                               <DialogActions>
-                                <Button onClick={() => handleDelete(id)}>Confirm</Button>
+                                <Button color='error' onClick={() => handleDelete(id)}>Confirm</Button>
                                 <Button onClick={handleClose} autoFocus>
                                   Annuler
                                 </Button>

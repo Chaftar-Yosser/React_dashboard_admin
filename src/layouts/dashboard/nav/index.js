@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
@@ -45,6 +45,20 @@ export default function Nav({ openNav, onCloseNav }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  // const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   // Fetch the user data or get it from a different source
+  //   const fetchUserData = () => {
+  //     const userData = JSON.parse(localStorage.getItem('user'));
+  //     console.log(localStorage.getItem('user'))
+  //     console.log(userData)
+  //     setUser(userData);
+  //   };
+
+  //   fetchUserData();
+  // }, []);
 
   const renderContent = (
     <Scrollbar
