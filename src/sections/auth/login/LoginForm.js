@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState , useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Stack, Alert, IconButton, InputAdornment, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { AuthContext } from '../../../AuthContext';
 import Iconify from '../../../components/iconify';
+
 
 async function loginUser(credentials) {
   return fetch('https://127.0.0.1:8000/login_check', {
@@ -15,7 +17,10 @@ async function loginUser(credentials) {
 }
 
 export default function LoginForm() {
-  const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
+
+  const navigate = useNavigate(); 
 
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUserName] = useState('');
@@ -54,6 +59,9 @@ export default function LoginForm() {
     });
 
     if ('token' in response) {
+
+      login(response.token); 
+
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       navigate('/dashboard', { replace: true });

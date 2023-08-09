@@ -1,4 +1,6 @@
 import { Navigate, useRoutes } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from './AuthContext';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
@@ -15,13 +17,25 @@ import FormEdit from './pages/FormEdit';
 import FormCreateProductPage from './pages/FormCreateProductPage';
 import FormEditProduct from './pages/FormEditProduct';
 
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const authctx = useContext(AuthContext);
+
+  const ProtectedRoute = ({children}) => {
+    if(!authctx.isLogin) {
+      
+      return <Navigate to='/login'/>
+    }
+    console.log(authctx.isLogin);
+    return children
+  }
+
   const routes = useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: <ProtectedRoute>  <DashboardLayout /> </ProtectedRoute>,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
@@ -31,12 +45,6 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
       ],
     },
-
-    // {
-    //   path: 'create',
-    //   element: <FormPages />,
-    // },
-
     {
       path: '/category',
       element: <DashboardLayout />,
@@ -50,7 +58,7 @@ export default function Router() {
 
     {
       path: '/product',
-      element: <DashboardLayout />,
+      element: <ProtectedRoute><DashboardLayout /> </ProtectedRoute>,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'create', element: <FormCreateProductPage/> },
