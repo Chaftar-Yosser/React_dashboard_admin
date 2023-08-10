@@ -2,6 +2,7 @@ import { useState , useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Stack, Alert, IconButton, InputAdornment, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import jwtDecode from 'jwt-decode';
 import { AuthContext } from '../../../AuthContext';
 import Iconify from '../../../components/iconify';
 
@@ -60,10 +61,12 @@ export default function LoginForm() {
 
     if ('token' in response) {
 
+      const decodedToken = jwtDecode(response.token); // Décodage du token
+
       login(response.token); 
 
       localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      localStorage.setItem('user', JSON.stringify(decodedToken));  // Stockez le token décodé dans le localStorage
       navigate('/dashboard', { replace: true });
     } else {
       setLoginError('Invalid email or password.'); // Définit l'erreur de connexion
